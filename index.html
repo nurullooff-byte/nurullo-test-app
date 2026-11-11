@@ -92,7 +92,8 @@ pre#debug{white-space:pre-wrap;word-break:break-all;font-size:11px;background:va
 <script>
 "use strict";
 const tg = window.Telegram && window.Telegram.WebApp;
-const inTG = !!(tg && tg.initData);
+// Pastki (klaviatura) tugmadan ochilganda Telegram initData bermaydi, shuning uchun platformaga qaraymiz
+const inTG = !!(tg && (tg.initData || (tg.platform && tg.platform !== "unknown")));
 if (inTG) { document.documentElement.classList.add("tg"); tg.ready(); tg.expand(); try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {} }
 else { document.getElementById("outside").hidden = false; }
 
@@ -313,7 +314,10 @@ function submit() {
   const size = new Blob([payload]).size;
   if (size > 4096) return modal(`Ochiq javoblar juda uzun (${size} bayt, chegara 4096). Ba'zi javoblarni qisqartiring.`, [["Tushunarli", null, true]]);
   try { localStorage.removeItem(STORE); } catch (e) {}
-  if (inTG) { tg.sendData(payload); }
+  if (inTG) {
+    try { tg.sendData(payload); }
+    catch (e) { return modal("Ma'lumot botga yuborilmadi. Ilovani yopib, bot chatidagi pastki tugma orqali qayta oching.", [["Tushunarli", null, true]]); }
+  }
   else { const d = document.getElementById("debug"); d.hidden = false; d.textContent = payload; window.__payload = payload; }
 }
 
