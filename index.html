@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Nurullo Math — Test</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathlive@0.109.2/mathlive.min.js"></script>
+<style>
+/* Telegram mavzusi ranglari; Telegram tashqarisida — zaxira ranglar */
+:root{
+  --bg: var(--tg-theme-bg-color, #ffffff);
+  --bg2: var(--tg-theme-secondary-bg-color, #f0f2f5);
+  --ink: var(--tg-theme-text-color, #16202a);
+  --hint: var(--tg-theme-hint-color, #7d8b99);
+  --acc: var(--tg-theme-button-color, #3390ec);
+  --acc-ink: var(--tg-theme-button-text-color, #ffffff);
+  --card: var(--tg-theme-section-bg-color, var(--bg));
+  --ok: #2fb36a; --warn: #e5a50a; --err: #e14b4b;
+  --line: color-mix(in srgb, var(--ink) 12%, transparent);
+  --field: #0d1b2e; --field-ink: #eef3fa;
+  --body: -apple-system, "Segoe UI", Roboto, system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not(.tg){
+  --bg:#17212b; --bg2:#0e1621; --ink:#e9eef3; --hint:#7f91a4; --card:#17212b; color-scheme:dark;}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font:15px/1.45 var(--body)}
+main{max-width:640px;margin:0 auto;padding:14px 14px 150px}
+.brand{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:700}
+h1{font-size:21px;line-height:1.2;margin:4px 0 4px;text-wrap:balance}
+.meta{color:var(--hint);font-size:13px}
+.hint{color:var(--hint);font-size:13.5px;margin:10px 0 0}
+.hint b{color:var(--ink)}
+.bar{height:6px;border-radius:9px;background:var(--bg2);margin:14px 0 4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--acc);transition:width .2s}
+section{margin-top:18px}
+.sh{display:flex;justify-content:space-between;align-items:baseline;margin:0 2px 8px;font-weight:700;font-size:14px}
+.sh span{color:var(--hint);font-weight:500;font-size:12.5px}
+.q{display:flex;align-items:center;gap:6px;background:var(--bg2);border:1.5px solid transparent;border-radius:14px;padding:7px 8px;margin-bottom:7px}
+.q.cur{border-color:var(--acc)}
+.q .n{width:30px;flex:none;text-align:right;color:var(--hint);font-weight:600;font-size:13px;font-variant-numeric:tabular-nums}
+.opts{display:grid;gap:6px;flex:1}
+.opts.k4{grid-template-columns:repeat(4,1fr)} .opts.k6{grid-template-columns:repeat(6,1fr)}
+.opt{height:44px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:700 16px var(--body);cursor:pointer}
+.opt.on{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.opt:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+.oq{background:var(--bg2);border:1.5px solid transparent;border-radius:14px;padding:8px 9px 9px;margin-bottom:8px}
+.oq.done{border-color:var(--ok)} .oq.half{border-color:var(--warn)}
+.oq .n{color:var(--hint);font-weight:600;font-size:13px;margin:0 0 6px 2px}
+.part{display:flex;align-items:center;gap:8px;background:var(--field);border-radius:11px;padding:2px 4px 2px 12px;margin-top:6px}
+.part label{color:#9fb3cc;font:italic 17px "Times New Roman",serif;flex:none}
+math-field{flex:1;min-width:0;background:transparent;color:var(--field-ink);font-size:20px;border:0;padding:8px 2px;outline:none;
+  --caret-color:#7fc1ff;--selection-background-color:#2d5b8f;--contains-highlight-background-color:transparent;--primary:#7fc1ff}
+math-field::part(menu-toggle){display:none}
+math-field::part(virtual-keyboard-toggle){color:#7fb0e6}
+footer{position:fixed;left:0;right:0;bottom:0;background:var(--bg);border-top:1px solid var(--line);padding:8px 14px calc(10px + env(safe-area-inset-bottom));z-index:5}
+.cnt{text-align:center;color:var(--hint);font-size:13px;margin-bottom:7px}
+.cnt b{color:var(--ink)}
+.send{display:block;width:100%;max-width:640px;margin:0 auto;height:48px;border:0;border-radius:12px;background:var(--acc);color:var(--acc-ink);font:700 15px var(--body);letter-spacing:.02em;cursor:pointer}
+.send:disabled{opacity:.55}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.box{background:var(--card);color:var(--ink);border-radius:16px;max-width:380px;width:100%;padding:18px 18px 12px;box-shadow:0 10px 40px rgba(0,0,0,.3)}
+.box p{margin:0 0 14px;font-size:15px}
+.acts{display:flex;justify-content:flex-end;gap:6px}
+.acts button{border:0;background:transparent;color:var(--acc);font:600 15px var(--body);padding:9px 14px;border-radius:9px;cursor:pointer}
+.acts button.pri{background:color-mix(in srgb,var(--acc) 14%,transparent)}
+.notice{background:color-mix(in srgb,var(--warn) 18%,transparent);border-radius:10px;padding:9px 11px;font-size:13px;margin-top:12px}
+pre#debug{white-space:pre-wrap;word-break:break-all;font-size:11px;background:var(--bg2);padding:10px;border-radius:10px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">Nurullo Math</div>
+  <h1 id="title">Test</h1>
+  <div class="meta" id="meta"></div>
+  <p class="hint" id="hint"></p>
+  <div class="notice" id="outside" hidden>Bu sahifa Telegram tashqarisida ochildi: javoblar botga yuborilmaydi, faqat pastda ko'rsatiladi (sinov rejimi).</div>
+  <div class="bar"><i id="bar"></i></div>
+  <div id="sections"></div>
+  <pre id="debug" hidden></pre>
+</main>
+<footer>
+  <div class="cnt" id="cnt"></div>
+  <button class="send" id="send" type="button"></button>
+</footer>
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true">
+  <div class="box"><p id="mtext"></p><div class="acts" id="macts"></div></div>
+</div>
+<script>
+"use strict";
+const tg = window.Telegram && window.Telegram.WebApp;
+const inTG = !!(tg && tg.initData);
+if (inTG) { document.documentElement.classList.add("tg"); tg.ready(); tg.expand(); try { tg.disableVerticalSwipes && tg.disableVerticalSwipes(); } catch (e) {} }
+else { document.getElementById("outside").hidden = false; }
+
+const P = new URLSearchParams(location.search);
+const MODE = P.get("mode") === "key" ? "key" : "solve";
+const TYPE = P.get("type") === "oddiy" ? "oddiy" : "rasch";
+const CODE = (P.get("code") || "").replace(/\D/g, "");
+const TITLE = (P.get("title") || "Test").slice(0, 60);
+const NODDIY = Math.max(1, Math.min(100, parseInt(P.get("n") || "30", 10) || 30));
+
+// Test shabloni
+const OPTS = TYPE === "rasch" ? [...Array(32).fill(4), ...Array(3).fill(6)] : Array(NODDIY).fill(4);
+const NOPEN = TYPE === "rasch" ? 10 : 0;
+const NB = OPTS.length + 2 * NOPEN;
+const L = "ABCDEF";
+
+const A = Array(OPTS.length).fill("");            // yopiq javoblar
+const O = Array.from({length: NOPEN}, () => [{l: "", s: ""}, {l: "", s: ""}]); // ochiq javoblar
+const MF = [];                                     // math-field elementlari
+const STORE = `nm_${MODE}_${CODE}`;
+
+// ---------- sarlavha
+document.getElementById("title").textContent = (MODE === "key" ? "🔑 " : "✍️ ") + TITLE + (CODE && MODE === "solve" ? " · #" + CODE : "");
+const nq = OPTS.length + NOPEN;
+document.getElementById("meta").textContent = TYPE === "rasch"
+  ? `${nq} ta savol · ${NB} ta baholanadigan band · Rasch modeli` : `${nq} ta savol · oddiy test`;
+document.getElementById("hint").innerHTML = MODE === "key"
+  ? (TYPE === "rasch"
+      ? "Har bir savolning <b>to'g'ri javobini</b> belgilang: <b>1–32</b> — A–D, <b>33–35</b> — A–F, <b>36–45</b> — a va b qismli ochiq javob. Bir nechta to'g'ri javob bo'lsa, <b>;</b> bilan ajrating. Kompyuterda <b>a–f</b> tugmalari navbatdagi yopiq savolni to'ldiradi, <b>Backspace</b> oxirgisini o'chiradi."
+      : "Har bir savolning <b>to'g'ri javobini</b> belgilang. Kompyuterda <b>a–d</b> tugmalari navbatdagi savolni to'ldiradi, <b>Backspace</b> oxirgisini o'chiradi.")
+  : (TYPE === "rasch"
+      ? "<b>a/b</b> savollarda ikkala qismga alohida javob yozing, har biri alohida baholanadi. Natija test yakunlangach <b>Rasch modeli</b> bo'yicha hisoblanadi."
+      : "Har bir savol uchun bitta javobni belgilang. Javoblar yuborilgach o'zgartirib bo'lmaydi.");
+
+// ---------- bo'limlar
+function groupsClosed() {
+  const g = []; let s = 0;
+  for (let i = 1; i <= OPTS.length; i++) if (i === OPTS.length || OPTS[i] !== OPTS[s]) { g.push([s, i - 1]); s = i; }
+  return g;
+}
+const root = document.getElementById("sections");
+for (const [s, e] of groupsClosed()) {
+  const sec = document.createElement("section");
+  sec.innerHTML = `<div class="sh">${s + 1}–${e + 1} savollar (A–${L[OPTS[s] - 1]})<span>${e - s + 1} ta</span></div>`;
+  for (let i = s; i <= e; i++) {
+    const row = document.createElement("div");
+    row.className = "q"; row.id = "q" + i;
+    row.innerHTML = `<div class="n">${i + 1}.</div><div class="opts k${OPTS[i]}">` +
+      Array.from({length: OPTS[i]}, (_, k) => `<button type="button" class="opt" data-i="${i}" data-v="${L[k]}" aria-label="${i + 1}-savol ${L[k]}">${L[k]}</button>`).join("") + "</div>";
+    sec.appendChild(row);
+  }
+  root.appendChild(sec);
+}
+if (NOPEN) {
+  const sec = document.createElement("section");
+  const q0 = OPTS.length + 1;
+  sec.innerHTML = `<div class="sh">${q0}–${q0 + NOPEN - 1} savollar (a/b ochiq)<span>${NOPEN} ta · ${2 * NOPEN} ta javob</span></div>`;
+  for (let j = 0; j < NOPEN; j++) {
+    const card = document.createElement("div");
+    card.className = "oq"; card.id = "oq" + j;
+    card.innerHTML = `<div class="n">${q0 + j}.</div>` +
+      ["a", "b"].map((p, k) => `<div class="part"><label for="mf${j}${p}">${p})</label><math-field id="mf${j}${p}" data-j="${j}" data-k="${k}" math-virtual-keyboard-policy="auto"></math-field></div>`).join("");
+    sec.appendChild(card);
+  }
+  root.appendChild(sec);
+}
+
+root.addEventListener("click", ev => {
+  const b = ev.target.closest(".opt"); if (!b) return;
+  const i = +b.dataset.i, v = b.dataset.v;
+  A[i] = A[i] === v ? "" : v;
+  if (inTG && tg.HapticFeedback) tg.HapticFeedback.selectionChanged();
+  paintRow(i); setCur(A[i] ? nextEmpty(i) : i); update();
+});
+
+function paintRow(i) {
+  document.querySelectorAll(`#q${i} .opt`).forEach(b => b.classList.toggle("on", b.dataset.v === A[i]));
+}
+let cur = 0;
+function setCur(i) {
+  document.querySelectorAll(".q.cur").forEach(x => x.classList.remove("cur"));
+  cur = i; const el = document.getElementById("q" + i); if (el) el.classList.add("cur");
+}
+function nextEmpty(from) { for (let i = from; i < A.length; i++) if (!A[i]) return i; for (let i = 0; i < A.length; i++) if (!A[i]) return i; return Math.min(from + 1, A.length - 1); }
+
+// ---------- klaviatura yorliqlari (math-field tashqarisida)
+document.addEventListener("keydown", ev => {
+  if (ev.target && (ev.target.tagName === "MATH-FIELD" || ev.target.isContentEditable)) return;
+  if (!document.getElementById("modal").hidden) { if (ev.key === "Escape") closeModal(); return; }
+  const k = ev.key.toUpperCase();
+  if (k.length === 1 && L.includes(k) && !ev.ctrlKey && !ev.metaKey) {
+    const i = nextEmpty(0);
+    if (A[i] || L.indexOf(k) >= OPTS[i]) return;
+    A[i] = k; paintRow(i); setCur(nextEmpty(i)); update();
+    document.getElementById("q" + i).scrollIntoView({block: "nearest", behavior: "smooth"});
+    ev.preventDefault();
+  } else if (ev.key === "Backspace") {
+    for (let i = A.length - 1; i >= 0; i--) if (A[i]) { A[i] = ""; paintRow(i); setCur(i); update(); break; }
+    ev.preventDefault();
+  }
+});
+
+// ---------- MathLive
+function readMF(mf) {
+  const j = +mf.dataset.j, k = +mf.dataset.k;
+  let s = "";
+  try { s = mf.getValue("ascii-math") || ""; } catch (e) {}
+  O[j][k] = {l: (mf.value || "").trim(), s: s.trim()};
+}
+customElements.whenDefined("math-field").then(() => {
+  try {
+    MathfieldElement.soundsDirectory = null;
+    MathfieldElement.keypressSound = null;
+    MathfieldElement.plonkSound = null;
+  } catch (e) {}
+  const fn = (l, ins) => ({latex: l, insert: ins, class: "small"});
+  window.mathVirtualKeyboard.layouts = [{
+    label: "Matematika", id: "nm", displayEditToolbar: true,
+    rows: [
+      ["[1]","[2]","[3]","[4]","[5]","[6]","[7]","[8]","[9]","[0]"],
+      ["\\pi","e","a","b","c","x","y","z","[.]",{latex: ":", insert: ":"}],
+      ["[(]","[)]",{latex: "[", insert: "\\lbrack"},{latex: "]", insert: "\\rbrack"},
+       {latex: "\\frac{\\placeholder{}}{\\placeholder{}}", insert: "\\frac{#@}{#?}"},
+       {latex: "\\sqrt{\\placeholder{}}", insert: "\\sqrt{#0}"},
+       {latex: "\\placeholder{}^{\\placeholder{}}", insert: "#@^{#?}"},
+       {latex: "\\placeholder{}^2", insert: "#@^2"},
+       {latex: "\\placeholder{}^{-1}", insert: "#@^{-1}"},
+       {latex: "\\sqrt[3]{\\placeholder{}}", insert: "\\sqrt[3]{#0}"}],
+      ["[+]","[-]",{latex: "\\cdot", insert: "\\cdot"},"[/]","[=]",
+       fn("\\sin","\\sin\\left(#0\\right)"), fn("\\cos","\\cos\\left(#0\\right)"),
+       fn("\\tan","\\tan\\left(#0\\right)"), fn("\\cot","\\cot\\left(#0\\right)"), {latex: ";", insert: ";"}],
+      [fn("\\arcsin","\\arcsin\\left(#0\\right)"), fn("\\arccos","\\arccos\\left(#0\\right)"),
+       fn("\\arctan","\\arctan\\left(#0\\right)"), fn("\\operatorname{arcctg}","\\operatorname{arcctg}\\left(#0\\right)"),
+       fn("\\ln","\\ln\\left(#0\\right)"), fn("\\log_{\\placeholder{}}","\\log_{#?}\\left(#0\\right)"),
+       fn("e^{\\placeholder{}}","e^{#0}"), fn("\\sqrt[n]{\\placeholder{}}","\\sqrt[#?]{#0}"), "\\infty", {latex: "|\\placeholder{}|", insert: "\\left|#0\\right|"}],
+      ["[left]","[right]",{class: "separator w5"},"[backspace]","[return]","[hide-keyboard]"]
+    ]
+  }];
+  document.querySelectorAll("math-field").forEach(mf => {
+    try { mf.menuItems = []; mf.smartFence = true; mf.inlineShortcuts = {...mf.inlineShortcuts, "pi": "\\pi"}; } catch (e) {}
+    mf.addEventListener("input", () => { readMF(mf); update(); });
+    mf.addEventListener("change", () => { readMF(mf); update(); });
+  });
+  restore();
+});
+
+// ---------- hisoblagich
+function filledBand(x) { return !!(x.l || x.s); }
+function count() { return A.filter(Boolean).length + O.reduce((n, p) => n + filledBand(p[0]) + filledBand(p[1]), 0); }
+function missing() {
+  const m = [];
+  A.forEach((x, i) => { if (!x) m.push(String(i + 1)); });
+  O.forEach((p, j) => p.forEach((x, k) => { if (!filledBand(x)) m.push(`${OPTS.length + j + 1}${"ab"[k]}`); }));
+  return m;
+}
+function update() {
+  const n = count();
+  document.getElementById("bar").style.width = (n / NB * 100) + "%";
+  document.getElementById("cnt").innerHTML = `<b>${n} / ${NB}</b> ${MODE === "key" ? "belgilandi" : "javob berildi"}`;
+  const btn = document.getElementById("send");
+  if (MODE === "key") btn.textContent = n === NB ? "KALITNI SAQLASH" : `KALIT: ${n}/${NB} BELGILANDI`;
+  else btn.textContent = n === 0 ? "Javoblarni belgilang" : `YUBORISH (${n}/${NB})`;
+  btn.disabled = n === 0;
+  O.forEach((p, j) => {
+    const c = document.getElementById("oq" + j); if (!c) return;
+    const f = filledBand(p[0]) + filledBand(p[1]);
+    c.classList.toggle("done", f === 2); c.classList.toggle("half", f === 1);
+  });
+  save();
+}
+
+// ---------- qoralamani saqlash (ilova tasodifan yopilsa)
+function save() { try { localStorage.setItem(STORE, JSON.stringify({A, O})); } catch (e) {} }
+function restore() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORE) || "null");
+    if (!d || !Array.isArray(d.A) || d.A.length !== A.length) return;
+    d.A.forEach((x, i) => { A[i] = L.slice(0, OPTS[i]).includes(x) ? x : ""; paintRow(i); });
+    if (Array.isArray(d.O) && d.O.length === O.length) d.O.forEach((p, j) => p.forEach((x, k) => {
+      const mf = document.getElementById(`mf${j}${"ab"[k]}`);
+      if (mf && x && x.l) { mf.value = x.l; readMF(mf); }
+    }));
+    setCur(nextEmpty(0)); update();
+  } catch (e) {}
+}
+
+// ---------- oyna
+function modal(text, buttons) {
+  document.getElementById("mtext").textContent = text;
+  const acts = document.getElementById("macts"); acts.innerHTML = "";
+  buttons.forEach(([label, fn, pri]) => {
+    const b = document.createElement("button"); b.type = "button"; b.textContent = label; if (pri) b.className = "pri";
+    b.onclick = () => { closeModal(); fn && fn(); }; acts.appendChild(b);
+  });
+  document.getElementById("modal").hidden = false;
+  acts.lastChild && acts.lastChild.focus();
+}
+function closeModal() { document.getElementById("modal").hidden = true; }
+document.getElementById("modal").addEventListener("click", e => { if (e.target.id === "modal") closeModal(); });
+
+function shortList(m) { return m.slice(0, 8).join(", ") + (m.length > 8 ? ` va yana ${m.length - 8} ta` : ""); }
+
+document.getElementById("send").addEventListener("click", () => {
+  document.querySelectorAll("math-field").forEach(readMF);
+  const m = missing();
+  if (MODE === "key") {
+    if (m.length) return modal(`Kalit to'liq emas. Belgilanmagan: ${shortList(m)}.`, [["Tushunarli", null, true]]);
+    return modal("Kalit saqlansinmi? Keyingi qadamda test sozlamalarini tanlaysiz.", [["Bekor qilish"], ["Saqlash", submit, true]]);
+  }
+  const msg = m.length
+    ? `Javobsiz yoki chala bandlar: ${shortList(m)}. Shunday yuborilsinmi?`
+    : "Barcha savollarga javob berildi. Yuborilgach javoblarni o'zgartirib bo'lmaydi. Yuborilsinmi?";
+  modal(msg, [["Bekor qilish"], ["Yuborish", submit, true]]);
+});
+
+function submit() {
+  const payload = JSON.stringify({k: MODE === "key" ? "key" : "ans", c: CODE, t: TYPE, a: A, o: O});
+  const size = new Blob([payload]).size;
+  if (size > 4096) return modal(`Ochiq javoblar juda uzun (${size} bayt, chegara 4096). Ba'zi javoblarni qisqartiring.`, [["Tushunarli", null, true]]);
+  try { localStorage.removeItem(STORE); } catch (e) {}
+  if (inTG) { tg.sendData(payload); }
+  else { const d = document.getElementById("debug"); d.hidden = false; d.textContent = payload; window.__payload = payload; }
+}
+
+setCur(0); update();
+</script>
+</body>
+</html>
